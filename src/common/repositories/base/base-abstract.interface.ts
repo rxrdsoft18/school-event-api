@@ -1,4 +1,4 @@
-import { DeepPartial, FindManyOptions, FindOneOptions } from 'typeorm';
+import { DeepPartial, FindManyOptions, FindOneOptions, SelectQueryBuilder } from "typeorm";
 
 export interface BaseAbstractInterface<T> {
   create(data: DeepPartial<T>): T;
@@ -11,4 +11,5 @@ export interface BaseAbstractInterface<T> {
   remove(data: T): Promise<T>;
   findWithRelations(relations: FindManyOptions<T>): Promise<T[]>;
   preload(entityLike: DeepPartial<T>): Promise<T>;
+  getBaseQuery(alias: string): SelectQueryBuilder<T>;
 }

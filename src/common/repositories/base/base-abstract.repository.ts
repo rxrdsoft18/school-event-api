@@ -4,9 +4,8 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
-  Repository,
-} from 'typeorm';
-import { Logger } from "@nestjs/common";
+  Repository, SelectQueryBuilder
+} from "typeorm";
 
 interface HasId {
   id: number;
@@ -57,5 +56,9 @@ export class BaseAbstractRepository<T extends HasId>
   }
   public async preload(entityLike: DeepPartial<T>): Promise<T> {
     return await this.entity.preload(entityLike);
+  }
+
+  public getBaseQuery(alias: string): SelectQueryBuilder<T> {
+    return this.entity.createQueryBuilder(alias);
   }
 }

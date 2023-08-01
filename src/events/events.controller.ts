@@ -9,19 +9,21 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   ValidationPipe,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './dtos/create-event.dto';
 import { UpdateEventDto } from './dtos/update-event.dto';
+import { ListEventOptions } from './find-options/list-event-options';
 
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  findAll() {
-    return this.eventsService.findAll();
+  findAll(@Query() options: ListEventOptions) {
+    return this.eventsService.findAll(options);
   }
 
   @Get(':id')
