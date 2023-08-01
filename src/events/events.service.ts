@@ -10,6 +10,10 @@ import {
   ListEventOptions,
   WhenEventOptions,
 } from './find-options/list-event-options';
+import {
+  paginate,
+  PaginateOptions,
+} from '../common/utils/pagination/paginator';
 
 @Injectable()
 export class EventsService {
@@ -53,13 +57,15 @@ export class EventsService {
       );
   }
 
-  findAll(options?: ListEventOptions) {
+  findAll() {
     // return this.eventsRepository.findAll();
-    // return this.eventsRepository.getBaseQuery('e').getMany();
-
+    return this.eventsRepository.getBaseQuery('e').getMany();
+  }
+  findAllWithAttendeeCountFiltered(options?: ListEventOptions) {
     let query = this.getEventsWithAttendeeCountQuery();
 
-    if (!options) return query.getMany();
+    // if (!options) return query.getMany();
+    if (!options) return query;
 
     if (options.when) {
       if (options.when === WhenEventOptions.Today) {
@@ -82,8 +88,18 @@ export class EventsService {
       }
     }
 
-    return query.getMany();
+    // return query.getMany();
+    return query;
   }
+
+  async findAllWithAttendeeCountFilteredPaginated(
+    options: ListEventOptions,
+    paginateOptions: PaginateOptions,
+  ) {
+    const query = this.findAllWithAttendeeCountFiltered(options);
+    return paginate(query, paginateOptions);
+  }
+
   async findOne(id: number) {
     // const event = await this.eventsRepository.findOneById(id);
     const event = await this.getEventsWithAttendeeCountQuery()

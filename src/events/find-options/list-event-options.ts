@@ -5,6 +5,10 @@ export class ListEventOptions {
   @IsInt()
   @Transform(({ value }) => parseInt(value))
   when?: WhenEventOptions = WhenEventOptions.All;
+
+  @IsInt()
+  @Transform(({ value }) => parseInt(value))
+  page = 1;
 }
 
 export enum WhenEventOptions {

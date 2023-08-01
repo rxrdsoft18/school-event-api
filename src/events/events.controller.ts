@@ -23,7 +23,14 @@ export class EventsController {
 
   @Get()
   findAll(@Query() options: ListEventOptions) {
-    return this.eventsService.findAll(options);
+    return this.eventsService.findAllWithAttendeeCountFilteredPaginated(
+      options,
+      {
+        total: true,
+        currentPage: options.page,
+        limit: 10,
+      },
+    );
   }
 
   @Get(':id')
