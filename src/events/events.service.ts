@@ -14,6 +14,7 @@ import {
   paginate,
   PaginateOptions,
 } from '../common/utils/pagination/paginator';
+import { DeleteResult } from "typeorm";
 
 @Injectable()
 export class EventsService {
@@ -132,6 +133,14 @@ export class EventsService {
   async delete(id: number) {
     const event = await this.findOne(id);
     await this.eventsRepository.remove(event);
+  }
+
+  async deleteEvent(id: number): Promise<DeleteResult> {
+    return this.eventsRepository
+      .getBaseQuery('e')
+      .delete()
+      .where('id = :id', { id })
+      .execute();
   }
 
   async practice() {

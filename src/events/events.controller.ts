@@ -54,7 +54,8 @@ export class EventsController {
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id', ParseIntPipe) id: number) {
-    return this.eventsService.delete(id);
+    // return this.eventsService.delete(id);
+    return this.eventsService.deleteEvent(id);
   }
 
   @Get('practice/test')
