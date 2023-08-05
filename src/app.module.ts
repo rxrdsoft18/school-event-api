@@ -4,6 +4,7 @@ import ormConfig from './config/orm.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventsModule } from './events/events.module';
 import { TrainingModule } from './training/training.module';
+import { AuthModule } from './auth/auth.module';
 import ormConfigProd from './config/orm.config.prod';
 
 @Module({
@@ -20,6 +21,7 @@ import ormConfigProd from './config/orm.config.prod';
     }),
     EventsModule,
     TrainingModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
