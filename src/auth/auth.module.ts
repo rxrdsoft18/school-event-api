@@ -4,9 +4,21 @@ import { UserRepository } from './repositories';
 import { LocalStrategy } from './strategies/local.strategy';
 import { User } from './entities';
 import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get('JWT_SECRET'),
+        signOptions: { expiresIn: `${configService.get('JWT_EXPIRATION')}s` },
+      }),
+    }),
+  ],
   providers: [
     {
       provide: 'UserRepositoryInterface',
@@ -15,5 +27,6 @@ import { AuthService } from './auth.service';
     LocalStrategy,
     AuthService,
   ],
+  controllers: [AuthController],
 })
 export class AuthModule {}
