@@ -12,7 +12,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -21,7 +21,7 @@ export class User {
   @Column()
   lastName: string;
 
-  @OneToOne(() => Profile)
+  @OneToOne(() => Profile, { cascade: true })
   @JoinColumn()
   profile: Profile;
 }
