@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   AttendeesRepositoryInterface,
   EventsRepositoryInterface,
@@ -14,7 +19,8 @@ import {
   paginate,
   PaginateOptions,
 } from '../common/utils/pagination/paginator';
-import { DeleteResult } from "typeorm";
+import { DeleteResult } from 'typeorm';
+import { User } from '../auth/entities';
 
 @Injectable()
 export class EventsService {
@@ -114,12 +120,22 @@ export class EventsService {
     return event;
   }
 
-  create(createEventDto: CreateEventDto) {
-    return this.eventsRepository.save(createEventDto);
+  create(createEventDto: CreateEventDto, user: User) {
+    return this.eventsRepository.save({
+      ...createEventDto,
+      organizer: user,
+    });
   }
 
-  async update(id: number, updateEventDto: UpdateEventDto) {
+  async update(id: number, updateEventDto: UpdateEventDto, user: User) {
     const event = await this.findOne(id);
+
+    if (event.organizerId !== user.id) {
+      throw new ForbiddenException(
+        null,
+        'You are not authorized to change this event',
+      );
+    }
 
     const updateEvent = {
       ...event,
@@ -130,12 +146,27 @@ export class EventsService {
     return this.eventsRepository.save(updateEvent);
   }
 
-  async delete(id: number) {
+  async delete(id: number, user: User) {
     const event = await this.findOne(id);
+
+    if (event.organizerId !== user.id) {
+      throw new ForbiddenException(
+        null,
+        'You are not authorized to change this event',
+      );
+    }
     await this.eventsRepository.remove(event);
   }
 
-  async deleteEvent(id: number): Promise<DeleteResult> {
+  async deleteEvent(id: number, user: User): Promise<DeleteResult> {
+    const event = await this.findOne(id);
+    if (event.organizerId !== user.id) {
+      throw new ForbiddenException(
+        null,
+        'You are not authorized to change this event',
+      );
+    }
+
     return this.eventsRepository
       .getBaseQuery('e')
       .delete()
