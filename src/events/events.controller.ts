@@ -16,7 +16,7 @@ import {
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
-import { EventsService } from './events.service';
+import { EventsService } from './services/events.service';
 import { CreateEventDto } from './dtos/create-event.dto';
 import { UpdateEventDto } from './dtos/update-event.dto';
 import { ListEventOptions } from './find-options/list-event-options';
@@ -31,7 +31,7 @@ export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
-  // @UseInterceptors(ClassSerializerInterceptor)
+  @UseInterceptors(ClassSerializerInterceptor)
   async findAll(@Query() options: ListEventOptions) {
     console.log(options);
     return await this.eventsService.findAllWithAttendeeCountFilteredPaginated(

@@ -7,20 +7,20 @@ import {
 import {
   AttendeesRepositoryInterface,
   EventsRepositoryInterface,
-} from './interfaces';
-import { CreateEventDto } from './dtos/create-event.dto';
-import { UpdateEventDto } from './dtos/update-event.dto';
-import { Attendee, AttendeeAnswerEnum } from './entities';
+} from '../interfaces';
+import { CreateEventDto } from '../dtos/create-event.dto';
+import { UpdateEventDto } from '../dtos/update-event.dto';
+import { Attendee, AttendeeAnswerEnum, PaginatedEvents } from '../entities';
 import {
   ListEventOptions,
   WhenEventOptions,
-} from './find-options/list-event-options';
+} from '../find-options/list-event-options';
+import { DeleteResult } from 'typeorm';
+import { User } from '../../auth/entities';
 import {
   paginate,
   PaginateOptions,
-} from '../common/utils/pagination/paginator';
-import { DeleteResult } from 'typeorm';
-import { User } from '../auth/entities';
+} from '../../common/utils/pagination/paginator';
 
 @Injectable()
 export class EventsService {
@@ -102,7 +102,7 @@ export class EventsService {
   async findAllWithAttendeeCountFilteredPaginated(
     options: ListEventOptions,
     paginateOptions: PaginateOptions,
-  ) {
+  ): Promise<PaginatedEvents> {
     const query = this.findAllWithAttendeeCountFiltered(options);
     return paginate(query, paginateOptions);
   }
@@ -172,6 +172,35 @@ export class EventsService {
       .delete()
       .where('id = :id', { id })
       .execute();
+  }
+
+  async getEventsOrganizedByUserIdPaginated(
+    userId: number,
+    paginatedOptions: PaginateOptions,
+  ): Promise<PaginatedEvents> {
+    const query = await this.getEventsOrganizedByUserId(userId);
+    return paginate(query, paginatedOptions);
+  }
+
+  async getEventsOrganizedByUserId(userId: number) {
+    return this.eventsRepository
+      .getBaseQuery('e')
+      .where('e.organizerId = :userId', { userId });
+  }
+
+  async getEventsAttendedByUserIdPaginated(
+    userId: number,
+    paginatedOptions: PaginateOptions,
+  ): Promise<PaginatedEvents> {
+    const query = await this.getEventsAttendedByUserId(userId);
+    return paginate(query, paginatedOptions);
+  }
+
+  async getEventsAttendedByUserId(userId: number) {
+    return this.eventsRepository
+      .getBaseQuery('e')
+      .leftJoinAndSelect('e.attendees', 'a')
+      .where('a.userId = :userId', { userId });
   }
 
   async practice() {
