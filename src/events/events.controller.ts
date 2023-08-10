@@ -47,7 +47,7 @@ export class EventsController {
   @Get(':id')
   @UseInterceptors(ClassSerializerInterceptor)
   findById(@Param('id', ParseIntPipe) id: number) {
-    return this.eventsService.findOne(id);
+    return this.eventsService.getEventWithAttendeeCount(id);
   }
 
   @Post()

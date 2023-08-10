@@ -10,12 +10,17 @@ import {
 } from '../interfaces';
 import { CreateEventDto } from '../dtos/create-event.dto';
 import { UpdateEventDto } from '../dtos/update-event.dto';
-import { Attendee, AttendeeAnswerEnum, PaginatedEvents } from '../entities';
+import {
+  Attendee,
+  AttendeeAnswerEnum,
+  Event,
+  PaginatedEvents,
+} from '../entities';
 import {
   ListEventOptions,
   WhenEventOptions,
 } from '../find-options/list-event-options';
-import { DeleteResult } from 'typeorm';
+import { DeleteResult, SelectQueryBuilder } from 'typeorm';
 import { User } from '../../auth/entities';
 import {
   paginate,
@@ -31,7 +36,7 @@ export class EventsService {
     private readonly attendeesRepository: AttendeesRepositoryInterface,
   ) {}
 
-  private getEventsWithAttendeeCountQuery() {
+  private getEventsWithAttendeeCountQuery(): SelectQueryBuilder<Event> {
     return this.eventsRepository
       .getBaseQuery('e')
       .loadRelationCountAndMap('e.attendeeCount', 'e.attendees')
@@ -64,11 +69,13 @@ export class EventsService {
       );
   }
 
-  findAll() {
+  findAll(): Promise<Event[]> {
     // return this.eventsRepository.findAll();
     return this.eventsRepository.getBaseQuery('e').getMany();
   }
-  findAllWithAttendeeCountFiltered(options?: ListEventOptions) {
+  getEventsWithAttendeeCountFilteredQuery(
+    options?: ListEventOptions,
+  ): SelectQueryBuilder<Event> {
     let query = this.getEventsWithAttendeeCountQuery();
 
     // if (!options) return query.getMany();
@@ -103,11 +110,11 @@ export class EventsService {
     options: ListEventOptions,
     paginateOptions: PaginateOptions,
   ): Promise<PaginatedEvents> {
-    const query = this.findAllWithAttendeeCountFiltered(options);
+    const query = this.getEventsWithAttendeeCountFilteredQuery(options);
     return paginate(query, paginateOptions);
   }
 
-  async findOne(id: number) {
+  async getEventWithAttendeeCount(id: number): Promise<Event> {
     // const event = await this.eventsRepository.findOneById(id);
     const event = await this.getEventsWithAttendeeCountQuery()
       .andWhere('e.id = :id', { id })
@@ -120,14 +127,25 @@ export class EventsService {
     return event;
   }
 
-  create(createEventDto: CreateEventDto, user: User) {
-    return this.eventsRepository.save({
-      ...createEventDto,
-      organizer: user,
-    });
+  async findOne(id: number): Promise<Event> {
+    return this.eventsRepository.findOneById(id);
   }
 
-  async update(id: number, updateEventDto: UpdateEventDto, user: User) {
+  async create(createEventDto: CreateEventDto, user: User): Promise<Event> {
+    return await this.eventsRepository.save(
+      new Event({
+        ...createEventDto,
+        organizer: user,
+        when: new Date(createEventDto.when),
+      }),
+    );
+  }
+
+  async update(
+    id: number,
+    updateEventDto: UpdateEventDto,
+    user: User,
+  ): Promise<Event> {
     const event = await this.findOne(id);
 
     if (event.organizerId !== user.id) {
@@ -146,7 +164,7 @@ export class EventsService {
     return this.eventsRepository.save(updateEvent);
   }
 
-  async delete(id: number, user: User) {
+  async delete(id: number, user: User): Promise<void> {
     const event = await this.findOne(id);
 
     if (event.organizerId !== user.id) {
@@ -178,11 +196,11 @@ export class EventsService {
     userId: number,
     paginatedOptions: PaginateOptions,
   ): Promise<PaginatedEvents> {
-    const query = await this.getEventsOrganizedByUserId(userId);
+    const query = this.getEventsOrganizedByUserIdQuery(userId);
     return paginate(query, paginatedOptions);
   }
 
-  async getEventsOrganizedByUserId(userId: number) {
+  getEventsOrganizedByUserIdQuery(userId: number): SelectQueryBuilder<Event> {
     return this.eventsRepository
       .getBaseQuery('e')
       .where('e.organizerId = :userId', { userId });
@@ -192,11 +210,11 @@ export class EventsService {
     userId: number,
     paginatedOptions: PaginateOptions,
   ): Promise<PaginatedEvents> {
-    const query = await this.getEventsAttendedByUserId(userId);
+    const query = this.getEventsAttendedByUserIdQuery(userId);
     return paginate(query, paginatedOptions);
   }
 
-  async getEventsAttendedByUserId(userId: number) {
+  getEventsAttendedByUserIdQuery(userId: number): SelectQueryBuilder<Event> {
     return this.eventsRepository
       .getBaseQuery('e')
       .leftJoinAndSelect('e.attendees', 'a')
@@ -214,7 +232,7 @@ export class EventsService {
     const event = events[0];
 
     const attende = new Attendee();
-    attende.name = 'Richard second';
+    // attende.name = 'Richard second';
     // attende.event = event;
 
     event.attendees.push(attende);

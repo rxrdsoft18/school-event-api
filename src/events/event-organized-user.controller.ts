@@ -1,6 +1,6 @@
 import {
   ClassSerializerInterceptor,
-  Controller,
+  Controller, DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
@@ -18,7 +18,7 @@ export class EventOrganizedUserController {
   @UseInterceptors(ClassSerializerInterceptor)
   async findEventsOrganizedByUserId(
     @Param('userId', ParseIntPipe) userId: number,
-    @Query('page') page = 1,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
   ) {
     return this.eventsService.getEventsOrganizedByUserIdPaginated(userId, {
       total: true,

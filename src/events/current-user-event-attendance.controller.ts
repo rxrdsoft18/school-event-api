@@ -2,6 +2,7 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
+  DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
@@ -30,7 +31,10 @@ export class CurrentUserEventAttendanceController {
 
   @Get()
   @UseInterceptors(ClassSerializerInterceptor)
-  async findAll(@CurrentUser() user: User, @Query('page') page = 1) {
+  async findAll(
+    @CurrentUser() user: User,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
+  ) {
     return this.eventsService.getEventsAttendedByUserIdPaginated(user.id, {
       currentPage: page,
       limit: 6,
