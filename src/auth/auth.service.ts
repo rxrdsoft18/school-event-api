@@ -85,8 +85,6 @@ export class AuthService {
 
     const hashedPassword = await this.hashPassword(password);
 
-    this.logger.debug(`User create: ${JSON.stringify(createUserDto)}`);
-
     const createdUser = await this.userRepository.save({
       username,
       email,
