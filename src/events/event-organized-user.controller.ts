@@ -23,7 +23,7 @@ export class EventOrganizedUserController {
     return this.eventsService.getEventsOrganizedByUserIdPaginated(userId, {
       total: true,
       currentPage: page,
-      limit: 5,
+      limit: 10,
     });
   }
 }
