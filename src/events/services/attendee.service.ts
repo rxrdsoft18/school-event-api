@@ -11,8 +11,9 @@ export class AttendeeService {
   ) {}
 
   async findByEventId(eventId: number): Promise<Attendee[]> {
+    console.log(eventId, 'EVENTID');
     return this.attendeeRepository.findAll({
-      where: { id: eventId },
+      where: { eventId },
     });
   }
 

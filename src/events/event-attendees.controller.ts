@@ -4,8 +4,9 @@ import {
   Get,
   Param,
   ParseIntPipe,
-  SerializeOptions, UseInterceptors
-} from "@nestjs/common";
+  SerializeOptions,
+  UseInterceptors,
+} from '@nestjs/common';
 import { AttendeeService } from './services/attendee.service';
 
 @Controller('events/:eventId/attendees')
