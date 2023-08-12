@@ -148,6 +148,10 @@ export class EventsService {
   ): Promise<Event> {
     const event = await this.findOne(id);
 
+    if (!event) {
+      throw new NotFoundException();
+    }
+
     if (event.organizerId !== user.id) {
       throw new ForbiddenException(
         null,
@@ -167,6 +171,10 @@ export class EventsService {
   async delete(id: number, user: User): Promise<void> {
     const event = await this.findOne(id);
 
+    if (!event) {
+      throw new NotFoundException();
+    }
+
     if (event.organizerId !== user.id) {
       throw new ForbiddenException(
         null,
@@ -178,6 +186,11 @@ export class EventsService {
 
   async deleteEvent(id: number, user: User): Promise<DeleteResult> {
     const event = await this.findOne(id);
+
+    if (!event) {
+      throw new NotFoundException();
+    }
+
     if (event.organizerId !== user.id) {
       throw new ForbiddenException(
         null,
