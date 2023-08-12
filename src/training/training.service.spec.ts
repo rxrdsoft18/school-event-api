@@ -6,7 +6,13 @@ describe('TrainingService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [TrainingService],
+      providers: [
+        TrainingService,
+        {
+          provide: 'SubjectRepositoryInterface',
+          useClass: jest.fn(),
+        },
+      ],
     }).compile();
 
     service = module.get<TrainingService>(TrainingService);
