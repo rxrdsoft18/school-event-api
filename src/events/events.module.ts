@@ -22,10 +22,6 @@ import { CurrentUserEventAttendanceController } from './current-user-event-atten
       provide: 'EventsRepositoryInterface',
       useClass: EventsRepository,
     },
-    {
-      provide: 'AttendeesRepositoryInterface',
-      useClass: AttendeesRepository,
-    },
     EventsService,
     AttendeeService,
   ],

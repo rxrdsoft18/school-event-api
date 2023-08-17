@@ -1,7 +1,7 @@
 import { Event } from './event.entity';
 
 describe('EventEntity', () => {
-  test('Event should be initialized through constructor', () => {
+  it('Event should be initialized through constructor', () => {
     const event = new Event({
       name: 'Interesting event',
       description: 'That is fun',

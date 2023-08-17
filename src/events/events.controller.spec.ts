@@ -30,7 +30,7 @@ describe('EventsController', () => {
     eventsService = module.get<EventsService>(EventsService);
   });
 
-  test('should return list of events', async () => {
+  it('should return list of events', async () => {
     const result = {
       first: 1,
       last: 1,
@@ -52,7 +52,7 @@ describe('EventsController', () => {
     expect(spy).toBeCalledTimes(1);
   });
 
-  test('should not delete an event, when it not found', async () => {
+  it('should not delete an event, when it not found', async () => {
     // const deleteSpy = jest.spyOn(eventsService, 'deleteEvent');
     const findSpy = jest
       .spyOn(eventsService, 'findOne')

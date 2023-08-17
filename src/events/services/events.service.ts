@@ -4,10 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import {
-  AttendeesRepositoryInterface,
-  EventsRepositoryInterface,
-} from '../interfaces';
+import { EventsRepositoryInterface } from '../interfaces';
 import { CreateEventDto } from '../dtos/create-event.dto';
 import { UpdateEventDto } from '../dtos/update-event.dto';
 import {
@@ -32,8 +29,6 @@ export class EventsService {
   constructor(
     @Inject('EventsRepositoryInterface')
     private readonly eventsRepository: EventsRepositoryInterface,
-    @Inject('AttendeesRepositoryInterface')
-    private readonly attendeesRepository: AttendeesRepositoryInterface,
   ) {}
 
   private getEventsWithAttendeeCountQuery(): SelectQueryBuilder<Event> {
