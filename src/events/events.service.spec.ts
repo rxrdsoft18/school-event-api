@@ -36,9 +36,11 @@ describe('EventsService', () => {
         id: 2,
       } as User;
 
-      jest
-        .spyOn(eventsService, 'findOne')
-        .mockResolvedValue({ id: eventId, organizerId: 2 } as Event);
+      jest.spyOn(eventsService, 'findOne').mockResolvedValue({
+        id: eventId,
+        organizerId: 2,
+        when: new Date('2023-08-16 23:16'),
+      } as Event);
 
       eventRepositoryMock.save.mockResolvedValue({
         id: 1,
@@ -50,7 +52,16 @@ describe('EventsService', () => {
         updateEventDto,
         user,
       );
-      expect(updatedEvent).toEqual({ id: eventId, address: 'New address' });
+      expect(updatedEvent).toEqual({
+        id: eventId,
+        address: 'New address',
+      });
+      expect(eventRepositoryMock.save).toBeCalledWith({
+        id: 1,
+        address: 'New address',
+        organizerId: 2,
+        when: new Date('2023-08-16 23:16'),
+      });
     });
     it('should return exception: NotFoundException', async () => {
       const eventId = 1;
@@ -90,6 +101,41 @@ describe('EventsService', () => {
           'You are not authorized to change this event',
         ),
       );
+    });
+  });
+
+  describe('deleteEvent', () => {
+    it('should delete the event', async () => {
+      const eventId = 1;
+      jest.spyOn(eventsService, 'findOne').mockResolvedValue({
+        id: eventId,
+        organizerId: 2,
+      } as Event);
+
+      const user = {
+        id: 2,
+      } as User;
+
+      await eventsService.deleteEvent(eventId, user);
+
+      expect(eventRepositoryMock.getBaseQuery).toHaveBeenCalledTimes(1);
+      expect(eventRepositoryMock.getBaseQuery).toHaveBeenCalledWith('e');
+
+      expect(
+        eventRepositoryMock.getBaseQuery('e').delete,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        eventRepositoryMock.getBaseQuery('e').delete().where,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        eventRepositoryMock.getBaseQuery('e').delete().where,
+      ).toHaveBeenCalledWith('id = :id', { id: 1 });
+      expect(
+        eventRepositoryMock
+          .getBaseQuery('e')
+          .delete()
+          .where('id = :id', { id: 1 }).execute,
+      ).toHaveBeenCalledTimes(1);
     });
   });
 });
