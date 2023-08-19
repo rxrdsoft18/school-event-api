@@ -1,5 +1,5 @@
 import { SelectQueryBuilder } from 'typeorm';
-import { Expose } from "class-transformer";
+import { Expose } from 'class-transformer';
 
 export interface PaginateOptions {
   limit: number;

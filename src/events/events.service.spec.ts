@@ -6,12 +6,18 @@ import { User } from '../auth/entities';
 import { EventsRepositoryInterface } from './interfaces';
 import { createMock } from '@golevelup/ts-jest';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { PaginateOptions } from '../common/utils/pagination/paginator';
+import * as paginator from './../common/utils/pagination/paginator';
+
+jest.mock('../common/utils/pagination/paginator');
 
 describe('EventsService', () => {
   let eventsService: EventsService;
   const eventRepositoryMock = createMock<EventsRepositoryInterface>();
+  let paginateMock;
 
   beforeEach(async () => {
+    paginateMock = paginator.paginate as jest.Mock;
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         EventsService,
@@ -136,6 +142,56 @@ describe('EventsService', () => {
           .delete()
           .where('id = :id', { id: 1 }).execute,
       ).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getEventsAttendedByUserIdPaginated', () => {
+    it('should return a list of paginated events', async () => {
+      const userId = 1;
+      const paginatedOptions: PaginateOptions = {
+        limit: 10,
+        currentPage: 1,
+      };
+
+      paginateMock.mockResolvedValue(
+        Promise.resolve({
+          first: 1,
+          last: 1,
+          total: 10,
+          limit: 10,
+          data: [],
+        }),
+      );
+
+      const events = await eventsService.getEventsAttendedByUserIdPaginated(
+        userId,
+        paginatedOptions,
+      );
+      expect(events).toEqual({
+        first: 1,
+        last: 1,
+        total: 10,
+        limit: 10,
+        data: [],
+      });
+
+      expect(eventRepositoryMock.getBaseQuery).toHaveBeenCalledTimes(1);
+      expect(eventRepositoryMock.getBaseQuery).toHaveBeenCalledWith('e');
+
+      expect(
+        eventRepositoryMock.getBaseQuery('e').leftJoinAndSelect,
+      ).toHaveBeenCalledTimes(1);
+
+      expect(
+        eventRepositoryMock
+          .getBaseQuery('e')
+          .leftJoinAndSelect('e.attendees', 'a').where,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        eventRepositoryMock
+          .getBaseQuery('e')
+          .leftJoinAndSelect('e.attendees', 'a').where,
+      ).toHaveBeenCalledWith('a.userId = :userId', { userId: 1 });
     });
   });
 });
