@@ -4,6 +4,7 @@ import { TrainingController } from './training.controller';
 import { TrainingService } from './training.service';
 import { Subject, Teacher } from './entities';
 import { SubjectRepository } from './repositories';
+import { AttendeesRepository } from "../events/repositories";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Teacher, Subject])],
@@ -13,7 +14,7 @@ import { SubjectRepository } from './repositories';
     {
       provide: 'SubjectRepositoryInterface',
       useClass: SubjectRepository,
-    },
+    }
   ],
 })
 export class TrainingModule {}
