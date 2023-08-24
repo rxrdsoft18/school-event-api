@@ -33,10 +33,10 @@ export class BaseAbstractRepository<T extends HasId>
   }
 
   public async findOneById(id: any): Promise<T> {
-    const options: FindOptionsWhere<T> = {
-      id: id,
+    const options: FindOneOptions<T> = {
+      where: { id },
     };
-    return await this.entity.findOneBy(options);
+    return await this.entity.findOneOrFail(options);
   }
 
   public async findByCondition(filterCondition: FindOneOptions<T>): Promise<T> {
