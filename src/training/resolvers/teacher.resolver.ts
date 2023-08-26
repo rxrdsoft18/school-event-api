@@ -4,6 +4,8 @@ import { TeacherService } from '../services/teacher.service';
 import { CreateTeacher } from '../dtos/input/create-teacher.input';
 import { UpdateTeacher } from '../dtos/input/update-teacher.input';
 import { EntityWithId } from '../object-types/school.types';
+import { UseGuards } from "@nestjs/common";
+import { JwtAuthGqlGuard } from "../../auth/guards/jwt-auth-gql.guard";
 
 @Resolver(() => Teacher)
 export class TeacherResolver {
@@ -20,6 +22,7 @@ export class TeacherResolver {
   }
 
   @Mutation(() => Teacher)
+  @UseGuards(JwtAuthGqlGuard)
   async createTeacher(
     @Args('createTeacher', { type: () => CreateTeacher })
     createTeacher: CreateTeacher,
