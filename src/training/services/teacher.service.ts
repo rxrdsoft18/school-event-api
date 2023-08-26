@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TeacherRepositoryInterface } from '../interfaces/teacher.repository.interface';
-import { CreateTeacher } from "../dtos/args/create-teacher.args";
+import { CreateTeacher } from '../dtos/input/create-teacher.input';
+import { Teacher } from '../entities';
+import { UpdateTeacher } from '../dtos/input/update-teacher.input';
+import { EntityWithId } from "../object-types/school.types";
 
 @Injectable()
 export class TeacherService {
@@ -18,6 +21,19 @@ export class TeacherService {
   }
 
   async createTeacher(createTeacher: CreateTeacher) {
-    return this.teacherRepository.save(createTeacher);
+    return this.teacherRepository.save(new Teacher(createTeacher));
+  }
+
+  async updateTeacher(id: number, updateTeacher: UpdateTeacher) {
+    const teacher = await this.teacherRepository.findOneById(id);
+    return this.teacherRepository.save(
+      new Teacher(Object.assign(teacher, updateTeacher)),
+    );
+  }
+
+  async deleteTeacher(id: number) {
+    const teacher = await this.teacherRepository.findOneById(id);
+    await this.teacherRepository.remove(teacher);
+    return new EntityWithId(id);
   }
 }

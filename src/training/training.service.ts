@@ -10,18 +10,18 @@ export class TrainingService {
     private readonly subjectRepository: SubjectRepositoryInterface,
   ) {}
   async savingRelation(createTraining: CreateTrainingDto) {
-    const subject = new Subject();
-    subject.name = createTraining.subjectName;
-    subject.teachers = [];
-
-    for (const teacher of createTraining.teacherNames) {
-      const newTeacher = new Teacher();
-      newTeacher.name = teacher;
-
-      subject.teachers.push(newTeacher);
-    }
-
-    await this.subjectRepository.save(subject);
+    // const subject = new Subject();
+    // subject.name = createTraining.subjectName;
+    // subject.teachers = [];
+    //
+    // for (const teacher of createTraining.teacherNames) {
+    //   const newTeacher = new Teacher();
+    //   newTeacher.name = teacher;
+    //
+    //   subject.teachers.push(newTeacher);
+    // }
+    //
+    // await this.subjectRepository.save(subject);
   }
 
   async removeRelation() {
@@ -29,7 +29,7 @@ export class TrainingService {
       where: { id: 1 },
       relations: ['teachers'],
     });
-    subject.teachers = subject.teachers.filter((teacher) => teacher.id !== 3);
+    // subject.teachers = subject.teachers.filter((teacher) => teacher.id !== 3);
     await this.subjectRepository.save(subject);
   }
 }

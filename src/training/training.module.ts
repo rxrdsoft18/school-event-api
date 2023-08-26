@@ -6,6 +6,8 @@ import { Subject, Teacher } from './entities';
 import { SubjectRepository, TeacherRepository } from "./repositories";
 import { TeacherResolver } from './resolvers/teacher.resolver';
 import { TeacherService } from "./services/teacher.service";
+import { SubjectResolver } from "./resolvers/subject.resolver";
+import { CourseResolver } from "./resolvers/course.resolver";
 
 @Module({
   imports: [TypeOrmModule.forFeature([Teacher, Subject])],
@@ -22,6 +24,8 @@ import { TeacherService } from "./services/teacher.service";
     },
     TeacherResolver,
     TeacherService,
+    SubjectResolver,
+    CourseResolver,
   ],
 })
 export class TrainingModule {}
