@@ -5,11 +5,11 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserRepositoryInterface } from './interfaces';
+import { UserRepositoryInterface } from '../interfaces';
 import * as bcrypt from 'bcrypt';
-import { Profile, User } from './entities';
+import { Profile, User } from '../entities';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { CreateUserDto } from '../dtos/create-user.dto';
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name);

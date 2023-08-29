@@ -1,16 +1,31 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Profile } from './profile.entity';
-import { Attendee, Event } from "../../events/entities";
-import { Expose } from "class-transformer";
+import { Attendee, Event } from '../../events/entities';
+import { Expose } from 'class-transformer';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 @Entity('users')
+@ObjectType()
 export class User {
+  constructor(partial?: Partial<User>) {
+    Object.assign(this, partial);
+  }
+
   @PrimaryGeneratedColumn()
   @Expose()
+  @Field(() => Int)
   id: number;
 
   @Column()
   @Expose()
+  @Field()
   username: string;
 
   @Column()
@@ -18,14 +33,17 @@ export class User {
 
   @Column({ unique: true })
   @Expose()
+  @Field()
   email: string;
 
   @Column()
   @Expose()
+  @Field()
   firstName: string;
 
   @Column()
   @Expose()
+  @Field()
   lastName: string;
 
   @OneToOne(() => Profile, { cascade: true })

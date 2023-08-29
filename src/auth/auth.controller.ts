@@ -10,7 +10,7 @@ import {
   UseGuards, UseInterceptors
 } from "@nestjs/common";
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { CurrentUser } from './decorators/current-user.decorator';

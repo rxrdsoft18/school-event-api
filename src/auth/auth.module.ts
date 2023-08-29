@@ -3,11 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './repositories';
 import { LocalStrategy } from './strategies/local.strategy';
 import { User } from './entities';
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from "./strategies/jwt.strategy";
+import { AuthResolver } from "./resolvers/auth.resolver";
+import { UserResolver } from "./resolvers/user.resolver";
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
     LocalStrategy,
     JwtStrategy,
     AuthService,
+    AuthResolver,
+    UserResolver,
   ],
   controllers: [AuthController],
 })
