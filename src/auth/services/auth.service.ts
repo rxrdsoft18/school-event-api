@@ -66,41 +66,4 @@ export class AuthService {
       where: [{ username }, { email }],
     });
   }
-
-  async register(createUserDto: CreateUserDto) {
-    const { username, email, password, firstName, lastName, age } =
-      createUserDto;
-
-    const existingUser = await this.getExistingUserByUsernameOrEmail(
-      username,
-      email,
-    );
-
-    if (existingUser) {
-      throw new BadRequestException(['username or email is already taken']);
-    }
-
-    const profile = new Profile();
-    profile.age = age;
-
-    const hashedPassword = await this.hashPassword(password);
-
-    const createdUser = await this.userRepository.save({
-      username,
-      email,
-      firstName,
-      lastName,
-      password: hashedPassword,
-      profile,
-    });
-
-    return {
-      user: {
-        id: createdUser.id,
-        username: createdUser.username,
-        email: createdUser.email,
-      },
-      token: this.getTokenForUser(createdUser),
-    };
-  }
 }

@@ -10,6 +10,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { AuthResolver } from "./resolvers/auth.resolver";
 import { UserResolver } from "./resolvers/user.resolver";
+import { UserService } from "./services/user.service";
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { UserResolver } from "./resolvers/user.resolver";
     AuthService,
     AuthResolver,
     UserResolver,
+    UserService,
   ],
   controllers: [AuthController],
 })
