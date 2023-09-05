@@ -22,8 +22,9 @@ export class UserDoesNotExistConstraint
     value: any,
     validationArguments?: ValidationArguments,
   ): Promise<boolean> {
+    console.log(validationArguments, validationArguments.property, value);
     const entity = await this.userRepository.findByCondition({
-      [validationArguments.property]: value,
+      where: [{ [validationArguments.property]: value }],
     });
 
     return entity === null;

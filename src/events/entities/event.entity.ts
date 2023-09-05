@@ -9,11 +9,10 @@ import {
 import { Expose } from 'class-transformer';
 import { Attendee } from './attendee.entity';
 import { User } from '../../auth/entities';
-import { PaginationResult } from '../../common/utils/pagination/paginator';
+import { Paginated } from '../../common/utils/pagination/paginator';
 
 @Entity('events')
 export class Event {
-
   constructor(partial?: Partial<Event>) {
     Object.assign(this, partial);
   }
@@ -63,4 +62,4 @@ export class Event {
   attendeeAccepted?: number;
 }
 
-export type PaginatedEvents = PaginationResult<Event>;
+export class PaginatedEvents extends Paginated<Event>(Event) {}

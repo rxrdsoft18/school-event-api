@@ -16,13 +16,6 @@ export class UserService {
     const { username, email, password, firstName, lastName, age } =
       createUserDto;
 
-    const existingUser =
-      await this.authService.getExistingUserByUsernameOrEmail(username, email);
-
-    if (existingUser) {
-      throw new BadRequestException(['username or email is already taken']);
-    }
-
     const profile = new Profile();
     profile.age = age;
 
@@ -38,11 +31,7 @@ export class UserService {
     });
 
     return {
-      user: {
-        id: createdUser.id,
-        username: createdUser.username,
-        email: createdUser.email,
-      },
+      ...createdUser,
       token: this.authService.getTokenForUser(createdUser),
     };
   }

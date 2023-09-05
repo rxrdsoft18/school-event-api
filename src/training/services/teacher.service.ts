@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { TeacherRepositoryInterface } from '../interfaces/teacher.repository.interface';
 import { CreateTeacher } from '../dtos/input/create-teacher.input';
-import { Teacher } from '../entities';
+import { PaginatedTeachers, Teacher } from '../entities';
 import { UpdateTeacher } from '../dtos/input/update-teacher.input';
-import { EntityWithId } from "../object-types/school.types";
+import { EntityWithId } from '../object-types/school.types';
+import { paginate } from '../../common/utils/pagination/paginator';
 
 @Injectable()
 export class TeacherService {
@@ -13,7 +14,11 @@ export class TeacherService {
   ) {}
 
   async getTeachers() {
-    return this.teacherRepository.findAll();
+    // return this.teacherRepository.findAll();
+    return paginate<Teacher, PaginatedTeachers>(
+      this.teacherRepository.getBaseQuery('t'),
+      PaginatedTeachers,
+    );
   }
 
   async getTeacher(id: number) {

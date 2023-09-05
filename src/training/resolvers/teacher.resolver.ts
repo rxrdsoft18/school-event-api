@@ -1,18 +1,19 @@
 import { Resolver, Query, Args, Int, Mutation } from '@nestjs/graphql';
-import { Teacher } from '../entities';
+import { UseGuards } from '@nestjs/common';
+import { PaginatedTeachers, Teacher } from '../entities';
 import { TeacherService } from '../services/teacher.service';
 import { CreateTeacher } from '../dtos/input/create-teacher.input';
 import { UpdateTeacher } from '../dtos/input/update-teacher.input';
 import { EntityWithId } from '../object-types/school.types';
-import { UseGuards } from "@nestjs/common";
-import { JwtAuthGqlGuard } from "../../auth/guards/jwt-auth-gql.guard";
+
+import { JwtAuthGqlGuard } from '../../auth/guards/jwt-auth-gql.guard';
 
 @Resolver(() => Teacher)
 export class TeacherResolver {
   constructor(private readonly teacherService: TeacherService) {}
 
-  @Query(() => [Teacher])
-  async teachers(): Promise<Teacher[]> {
+  @Query(() => PaginatedTeachers)
+  async teachers(): Promise<PaginatedTeachers> {
     return this.teacherService.getTeachers();
   }
 

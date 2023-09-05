@@ -106,7 +106,11 @@ export class EventsService {
     paginateOptions: PaginateOptions,
   ): Promise<PaginatedEvents> {
     const query = this.getEventsWithAttendeeCountFilteredQuery(options);
-    return paginate(query, paginateOptions);
+    return paginate<Event, PaginatedEvents>(
+      query,
+      PaginatedEvents,
+      paginateOptions,
+    );
   }
 
   async getEventWithAttendeeCount(id: number): Promise<Event> {
@@ -205,7 +209,11 @@ export class EventsService {
     paginatedOptions: PaginateOptions,
   ): Promise<PaginatedEvents> {
     const query = this.getEventsOrganizedByUserIdQuery(userId);
-    return paginate(query, paginatedOptions);
+    return paginate<Event, PaginatedEvents>(
+      query,
+      PaginatedEvents,
+      paginatedOptions,
+    );
   }
 
   getEventsOrganizedByUserIdQuery(userId: number): SelectQueryBuilder<Event> {
@@ -219,7 +227,11 @@ export class EventsService {
     paginatedOptions: PaginateOptions,
   ): Promise<PaginatedEvents> {
     const query = this.getEventsAttendedByUserIdQuery(userId);
-    return paginate(query, paginatedOptions);
+    return paginate<Event, PaginatedEvents>(
+      query,
+      PaginatedEvents,
+      paginatedOptions,
+    );
   }
 
   getEventsAttendedByUserIdQuery(userId: number): SelectQueryBuilder<Event> {
